@@ -1,0 +1,27 @@
+name: "Requisito funcional"
+description: "Registrar un requisito funcional derivado del modelo verbal (Paso 2, ítem 4)"
+title: "[RF] "
+labels: ["tipo:funcional"]
+body:
+  - type: input
+    id: modulo
+    attributes:
+      label: Módulo / funcionalidad
+      description: Agrupa el requisito por módulo del sistema
+      placeholder: "Ej: Gestión de pedidos"
+    validations:
+      required: true
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del requisito
+      description: Redacta el requisito de forma clara y verificable
+    validations:
+      required: true
+  - type: textarea
+    id: origen
+    attributes:
+      label: Trazabilidad
+      description: ¿De qué necesidad de negocio/interesado o parte del modelo verbal se deriva?
+    validations:
+      required: true
