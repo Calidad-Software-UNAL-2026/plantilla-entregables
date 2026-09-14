@@ -1,0 +1,28 @@
+name: "Requisito no funcional"
+description: "Registrar un requisito no funcional / de calidad (Paso 2, ítem 4 y Paso 8)"
+title: "[RNF] "
+labels: ["tipo:no-funcional"]
+body:
+  - type: input
+    id: atributo
+    attributes:
+      label: Atributo de calidad
+      description: "Ej: rendimiento, seguridad, usabilidad (ISO/IEC 25010)"
+    validations:
+      required: true
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del requisito
+    validations:
+      required: true
+  - type: input
+    id: metrica
+    attributes:
+      label: Métrica sugerida
+      placeholder: "Ej: tiempo de respuesta < 2s en el 95% de las solicitudes"
+  - type: input
+    id: norma
+    attributes:
+      label: Norma de referencia
+      placeholder: "Ej: ISO/IEC 25010 - Eficiencia de desempeño"

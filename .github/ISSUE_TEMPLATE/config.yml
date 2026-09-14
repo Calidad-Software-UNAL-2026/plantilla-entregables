@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Duda sobre la rúbrica
+    url: https://github.com/orgs/TU-ORG/discussions
+    about: Usa esto para preguntas generales que no son un requisito, riesgo o EDT.

@@ -1,0 +1,54 @@
+name: "Riesgo"
+description: "Registrar un riesgo del proyecto (Paso 5 - Registro de Riesgos)"
+title: "[Riesgo] "
+labels: ["riesgo"]
+body:
+  - type: textarea
+    id: causa
+    attributes:
+      label: Causa
+    validations:
+      required: true
+  - type: textarea
+    id: efecto
+    attributes:
+      label: Efecto
+    validations:
+      required: true
+  - type: dropdown
+    id: probabilidad
+    attributes:
+      label: Probabilidad
+      options: ["Baja", "Media", "Alta"]
+    validations:
+      required: true
+  - type: dropdown
+    id: impacto
+    attributes:
+      label: Impacto
+      options: ["Bajo", "Medio", "Alto"]
+    validations:
+      required: true
+  - type: dropdown
+    id: estrategia
+    attributes:
+      label: Estrategia de respuesta
+      options: ["Evitar", "Transferir", "Mitigar", "Aceptar"]
+    validations:
+      required: true
+  - type: textarea
+    id: plan_accion
+    attributes:
+      label: Plan de acción (contingencia o alternativo)
+    validations:
+      required: true
+  - type: input
+    id: disparador
+    attributes:
+      label: Indicador de activación (disparador)
+    validations:
+      required: true
+
+# Nota: el "responsable" del riesgo se asigna con el campo nativo
+# "Assignees" del issue (barra lateral derecha), no como campo de este
+# formulario — así queda como un @usuario real y filtrable.

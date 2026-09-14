@@ -1,0 +1,156 @@
+name: Mapa de Procesos y Modelo de Ciclo de Vida (Paso 3)
+
+# Cómo usarlo:
+# 1. Edita los pasos "Registrar proceso" de cada job con el contenido real
+#    de tu tailoring (Entradas/Actividades/Salidas/Recursos por proceso).
+# 2. Ejecuta el workflow manualmente desde la pestaña "Actions" -> este
+#    workflow -> "Run workflow" (workflow_dispatch), o simplemente haz push
+#    de un cambio a este archivo.
+# 3. El resultado se escribe en docs/mapa-procesos.md y queda commiteado
+#    automáticamente por el bot de Actions.
+#
+# El orden de los "needs" entre jobs representa el orden del modelo de
+# ciclo de vida del equipo (secuencial en este ejemplo). Si tu modelo es
+# incremental/iterativo, puedes hacer que varios jobs no dependan entre sí
+# (se ejecutan en paralelo) para representarlo visualmente en el grafo de
+# Actions.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/mapa-procesos.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  # ---------------------------------------------------------------------
+  # 0. Reinicia el archivo de salida en cada corrida para no duplicar
+  # ---------------------------------------------------------------------
+  inicializar:
+    name: "Inicializar documento"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crear encabezado del documento
+        run: |
+          mkdir -p docs
+          cat <<'EOF' > docs/mapa-procesos.md
+          # Mapa de Procesos y Modelo de Ciclo de Vida
+
+          > Generado automáticamente por `.github/workflows/mapa-procesos.yml`.
+          > No edites este archivo a mano: edita el workflow y vuelve a ejecutarlo.
+
+          EOF
+      - name: Commit inicial
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(mapa-procesos): inicializar documento"
+
+  # ---------------------------------------------------------------------
+  # Ejemplo con 3 procesos de la ISO/IEC/IEEE 12207:2017. Duplica este
+  # bloque de job por cada proceso que tu equipo haya seleccionado en el
+  # tailoring, y ajusta los "needs" según el orden real de tu modelo.
+  # ---------------------------------------------------------------------
+  proceso_gestion_proyecto:
+    name: "Proceso: Gestión de Proyecto"
+    needs: inicializar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Registrar proceso
+        run: |
+          cat <<'EOF' >> docs/mapa-procesos.md
+          ## Proceso: Gestión de Proyecto
+
+          - **Entradas:** Modelo verbal, extensión del equipo (Paso 1)
+          - **Actividades:** Planeación, seguimiento y control del proyecto
+          - **Salidas:** PMP, cronograma, presupuesto
+          - **Recursos:** Equipo del proyecto, plantillas de gestión
+
+          EOF
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(mapa-procesos): agregar proceso de gestión de proyecto"
+
+  proceso_requisitos:
+    name: "Proceso: Definición de Requisitos"
+    needs: proceso_gestion_proyecto
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Registrar proceso
+        run: |
+          cat <<'EOF' >> docs/mapa-procesos.md
+          ## Proceso: Definición de Requisitos
+
+          - **Entradas:** Modelo verbal, necesidades de negocio e interesados
+          - **Actividades:** Elicitación, análisis y especificación de requisitos
+          - **Salidas:** Documento de especificación de requisitos
+          - **Recursos:** BABOK v3, entrevistas/supuestos del equipo
+
+          EOF
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(mapa-procesos): agregar proceso de definición de requisitos"
+
+  proceso_diseno_arquitectonico:
+    name: "Proceso: Diseño Arquitectónico"
+    needs: proceso_requisitos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Registrar proceso
+        run: |
+          cat <<'EOF' >> docs/mapa-procesos.md
+          ## Proceso: Diseño Arquitectónico
+
+          - **Entradas:** Documento de especificación de requisitos
+          - **Actividades:** Definición de módulos, interfaces y decisiones de diseño
+          - **Salidas:** Vista arquitectónica preliminar
+          - **Recursos:** Requisitos funcionales/no funcionales priorizados
+
+          EOF
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(mapa-procesos): agregar proceso de diseño arquitectónico"
+
+  # ---------------------------------------------------------------------
+  # Job final: arma el diagrama Mermaid del modelo de ciclo de vida a
+  # partir del orden de los "needs" anteriores. GitHub renderiza Mermaid
+  # nativamente en Markdown, así que esto cumple el requisito de
+  # "diagrama gráfico, no solo texto" del Paso 3.
+  # ---------------------------------------------------------------------
+  modelo_ciclo_vida:
+    name: "Consolidar modelo de ciclo de vida"
+    needs: [proceso_gestion_proyecto, proceso_requisitos, proceso_diseno_arquitectonico]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generar diagrama del modelo de ciclo de vida
+        run: |
+          cat <<'EOF' >> docs/mapa-procesos.md
+          ## Modelo de Ciclo de Vida Seleccionado
+
+          <!-- Reemplaza "Secuencial adaptado" por el modelo real del equipo
+               (p. ej. incremental, en cascada adaptada, etc.) y justifica
+               brevemente la elección aquí debajo del diagrama. -->
+
+          ```mermaid
+          flowchart LR
+              A[Gestión de Proyecto] --> B[Definición de Requisitos]
+              B --> C[Diseño Arquitectónico]
+          ```
+
+          **Justificación:** _(edita este párrafo con el porqué del modelo elegido,
+          en función del dominio y alcance del proyecto)_
+
+          EOF
+      - name: Commit final
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(mapa-procesos): agregar modelo de ciclo de vida"
